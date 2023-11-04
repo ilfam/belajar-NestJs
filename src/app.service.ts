@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 
 import { KasirDto } from './dto/kasir.dto';
+import { HitungJarakDto } from './dto/hitungJarak.dto';
 
 @Injectable()
 export class AppService {
@@ -24,6 +25,26 @@ export class AppService {
         jumlahPembayaran,
         total: totalBelanja,
         kembalian,
+      },
+    };
+  }
+  hitungJarak(data: HitungJarakDto) {
+    const { jarak, kecepatan, berangkatMenit, berangkatJam } = data;
+    const TOTALMENITDALAMJAM = 60;
+    const durasiJam = jarak / kecepatan;
+    const durasiMenit = Math.round(durasiJam * TOTALMENITDALAMJAM);
+    const kandidatSampaiMenit = berangkatMenit + durasiMenit;
+    const sampaiMenit = kandidatSampaiMenit % TOTALMENITDALAMJAM;
+    const tambahanJam = Math.floor(kandidatSampaiMenit / TOTALMENITDALAMJAM);
+    const sampaiJam = berangkatJam + tambahanJam;
+    return {
+      meta: {
+        statusCode: 200,
+        message: 'succes',
+      },
+      data: {
+        sampaiJam,
+        sampaiMenit,
       },
     };
   }
